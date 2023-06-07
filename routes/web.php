@@ -22,6 +22,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
+//Route::resource('/noticias', NoticiaController::class)->middleware(['auth']);
 Route::resource('/noticias', NoticiaController::class);
 
 require __DIR__.'/auth.php';

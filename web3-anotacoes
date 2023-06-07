@@ -20,3 +20,198 @@ class Noticia extends Model
     use HasFactory;
     use SoftDeletes;
 }
+
+===
+
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\Facades\Gate;
+use App\Models\Noticia;
+use App\Models\User;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+
+class AuthServiceProvider extends ServiceProvider
+{
+    /**
+     * The model to policy mappings for the application.
+     *
+     * @var array<class-string, class-string>
+     */
+    protected $policies = [
+        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+    ];
+
+    /**
+     * Register any authentication / authorization services.
+     *
+     * @return void 
+     */
+    public function boot()
+    {
+        $this->registerPolicies();
+
+        Gate::define('excluir-noticia', function (User $user, Noticia $noticia){
+            return $user->id === $noticia->user_id;
+        });
+    }
+}
+
+===
+
+[ ... ]
+    public function boot()
+    {
+        $this->registerPolicies();
+
+        Gate::define('excluir-noticia', function (User $user, Noticia $noticia){
+            return $user->id === $noticia->user_id;
+        });
+
+        Gate::define('visualizar-noticia', function (User $user, Noticia $noticia){
+            return $user->id === $noticia->user_id;
+        });
+
+        Gate::define('editar-noticia', function (User $user, Noticia $noticia){
+            return $user->id === $noticia->user_id;
+        });
+    }
+[ ... ]
+===
+
+app/Http/Controllers/NoticiaController.php
+
+[ ... ]
+public function destroy(Noticia $noticia)
+    {   
+        $this->authorize('excluir-noticia', $noticia);
+[ ... ]
+
+[ ... ]
+    public function edit(Noticia $noticia)
+    {
+        $this->authorize('editar-noticia', $noticia);
+
+        return view('viewsNoticias.edit', compact(['noticia']));
+    }
+
+
+[ ... ]
+    public function show(Noticia $noticia)
+    {
+        $this->authorize('visualizar-noticia', $noticia);
+
+        return view('viewsNoticias.show', compact(['noticia']));
+    }
+[ ... ]
+
+
+[ ... ]
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Noticia  $noticia
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Noticia $noticia)
+    {
+        //$this->authorize('visualizar-noticia', $noticia);
+
+        if(! Gate::allows('visualizar-noticia', $noticia)){
+            abort(403);
+        }
+
+        return view('viewsNoticias.show', compact(['noticia']));
+    }
+[ ... ]
+
+use Illuminate\Support\Facades\Gate;
+
+
+[ ... ]
+    public function show(Noticia $noticia)
+    {
+        //$this->authorize('visualizar-noticia', $noticia);
+
+        if(Gate::denies('visualizar-noticia', $noticia)){
+            abort(403);
+        }
+
+        return view('viewsNoticias.show', compact(['noticia']));
+    }
+[ ... ]
+
+
+@if(Auth::check())
+
+[ ... ]
+
+@endif
+
+resources/views/viewsNoticias/index.blade.php
+
+
+[ ... ]
+@can('visualizar-noticia', $noticia)
+	<div style="margin-right:2%;">
+		<button type="button" class="btn btn-outline-info">
+                	<a href="{{ route('noticias.show', $noticia) }}">Visualizar</a>
+        	</button>
+	</div>
+@endcan
+[ ... ]
+
+
+
+@auth
+@can('excluir-noticia', $noticia)
+    <div style="margin-right:2%;">
+        <form method="post" action=" {{ route('noticias.destroy', $noticia) }} "
+            onsubmit="return confirm('Tem certeza que deseja REMOVER {{ addslashes($noticia->titulo) }}?')">
+            @csrf
+            @method('DELETE')
+            <button class="btn btn-outline-danger">
+                Excluir
+            </button>
+        </form>
+    </div>
+@endcan
+
+@can('editar-noticia', $noticia)
+    <div style="margin-right:2%;">
+        <button type="button" class="btn btn-outline-success">
+            <a href="{{ route('noticias.edit', $noticia) }}">Editar</a>
+        </button>
+    </div>
+@endcan
+
+@can('visualizar-noticia', $noticia)
+    <div style="margin-right:2%;">
+        <button type="button" class="btn btn-outline-info">
+            <a href="{{ route('noticias.show', $noticia) }}">Visualizar</a>
+        </button>
+    </div>
+@endcan
+
+@endauth
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

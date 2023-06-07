@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateNoticiaRequest;
 use App\Http\Controllers\Requests;
 use App\Models\Noticia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class NoticiaController extends Controller
 {
@@ -72,7 +73,12 @@ class NoticiaController extends Controller
      */
     public function show(Noticia $noticia)
     {
-        //echo "Metodo SHOW";
+        //$this->authorize('visualizar-noticia', $noticia);
+
+        if(Gate::denies('visualizar-noticia', $noticia)){
+            abort(403);
+        }
+
         return view('viewsNoticias.show', compact(['noticia']));
     }
 
@@ -84,7 +90,8 @@ class NoticiaController extends Controller
      */
     public function edit(Noticia $noticia)
     {
-        //echo "Metodo EDIT";
+        $this->authorize('editar-noticia', $noticia);
+
         return view('viewsNoticias.edit', compact(['noticia']));
     }
 
@@ -112,9 +119,9 @@ class NoticiaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Noticia $noticia)
-    {
-        //echo "Metodo DELETE (DESTROY)";
-        
+    {   
+        $this->authorize('excluir-noticia', $noticia);
+
         $noticia = Noticia::find($noticia->id);
         
         if(!isset($noticia)){

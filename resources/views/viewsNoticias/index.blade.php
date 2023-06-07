@@ -38,7 +38,7 @@
 
                                     <div style="display:flex">    
                                     @auth
-                                        <!--can('delete', $noticia)-->
+                                        @can('excluir-noticia', $noticia)
                                             <div style="margin-right:2%;">
                                                 <form method="post" action=" {{ route('noticias.destroy', $noticia) }} "
                                                     onsubmit="return confirm('Tem certeza que deseja REMOVER {{ addslashes($noticia->titulo) }}?')">
@@ -49,23 +49,24 @@
                                                     </button>
                                                 </form>
                                             </div>
-                                        <!--endcan-->
+                                        @endcan
                                         
-                                        <!--can('atualizar', $noticia)-->
+                                        @can('editar-noticia', $noticia)
                                             <div style="margin-right:2%;">
                                                 <button type="button" class="btn btn-outline-success">
                                                     <a href="{{ route('noticias.edit', $noticia) }}">Editar</a>
                                                 </button>
                                             </div>
-                                        <!--endcan-->
+                                        @endcan
                                         
-                                        <!--can('view', $noticia)-->
+                                        @can('visualizar-noticia', $noticia)
                                             <div style="margin-right:2%;">
                                                 <button type="button" class="btn btn-outline-info">
                                                     <a href="{{ route('noticias.show', $noticia) }}">Visualizar</a>
                                                 </button>
                                             </div>
-                                        <!--endcan-->
+                                        @endcan
+
                                     @endauth
                                     </div>
                                     </td>
