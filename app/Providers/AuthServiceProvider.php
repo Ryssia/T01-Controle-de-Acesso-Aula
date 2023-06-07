@@ -27,6 +27,12 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        Gate::before(function($user){
+            if($user->admin === 1){
+                return true;
+            }
+        });
+
         Gate::define('excluir-noticia', function (User $user, Noticia $noticia){
             return $user->id === $noticia->user_id;
         });
@@ -38,5 +44,10 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('editar-noticia', function (User $user, Noticia $noticia){
             return $user->id === $noticia->user_id;
         });
+
+        Gate::define('criar-noticia', function(User $user){
+            return ($user->admin <= 1);
+        });
+
     }
 }

@@ -8,11 +8,13 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     @if(Auth::check())
-                    <div style="margin-bottom:2%;">
-                        <button type="button" class="btn btn-outline-primary">
-                            <a href="{{ route('noticias.create') }}">Criar Noticia</a>
-                        </button>
-                    </div>
+                        @can('criar-noticia')
+                        <div style="margin-bottom:2%;">
+                            <button type="button" class="btn btn-outline-primary">
+                                <a href="{{ route('noticias.create') }}">Criar Noticia</a>
+                            </button>
+                        </div>
+                        @endcan
                     @endif
                     <!--<ul class="list-group">-->
                         <table class="table">

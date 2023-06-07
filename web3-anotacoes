@@ -198,9 +198,54 @@ resources/views/viewsNoticias/index.blade.php
 
 
 
+app/Providers/AuthServiceProvider.php
+
+[ ... ]
+	Gate::before(function($user){
+	    if($user->admin === 1){
+	        return true;
+	    }
+	});
+[ ... ]
 
 
+===
+app/Providers/AuthServiceProvider.php
+[ ... ]
+	Gate::define('criar-noticia', function(User $user){
+	    return ($user->admin <= 1);
+	});
+[ ... ]
 
+app/Http/Controllers/NoticiaController.php
+[ ... ]
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        $this->authorize('criar-noticia');
+
+        return view('viewsNoticias.create');
+    }
+[ ... ]
+
+resources/views/viewsNoticias/index.blade.php
+[ ... ]
+@if(Auth::check())
+     @can('criar-noticia')
+	<div style="margin-bottom:2%;">
+	    <button type="button" class="btn btn-outline-primary">
+		<a href="{{ route('noticias.create') }}">Criar Noticia</a>
+	    </button>
+	</div>
+    @endcan
+@endif
+[ ... ]
+
+===
 
 
 
