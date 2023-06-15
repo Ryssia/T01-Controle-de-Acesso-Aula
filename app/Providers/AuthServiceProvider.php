@@ -16,6 +16,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        //Noticia::class => 'App\Policies\TestePolicy',
+        Noticia::class => 'App\Policies\NoticiaPolicy',
     ];
 
     /**
@@ -27,12 +29,14 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        /*
         Gate::before(function($user){
             if($user->admin === 1){
                 return true;
             }
         });
-
+        */
+        /*
         Gate::define('excluir-noticia', function (User $user, Noticia $noticia){
             return $user->id === $noticia->user_id;
         });
@@ -48,6 +52,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('criar-noticia', function(User $user){
             return ($user->admin <= 1);
         });
+        */
 
     }
 }

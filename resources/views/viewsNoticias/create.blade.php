@@ -20,6 +20,7 @@
             </div>
 
             <button class="btn btn-primary">Criar</button>
+            
             <button class="btn btn-secondary">
                 <a href="{{route('noticias.index')}}">Voltar</a>
             </button>
