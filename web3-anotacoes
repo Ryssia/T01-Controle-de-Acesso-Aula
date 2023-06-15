@@ -270,8 +270,258 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
-        Noticia::class => NoticiaPolicy::class,
+        Noticia::class => 'App\Policies\NoticiaPolicy',
     ];
+
+===
+app/Policies/NoticiaPolicy.php
+<?php
+
+namespace App\Policies;
+
+use App\Models\Noticia;
+use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
+
+class NoticiaPolicy
+{
+    use HandlesAuthorization;
+
+    /**
+     * Determine whether the user can view any models.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function viewAny(User $user)
+    {
+        //
+    }
+
+    /**
+     * Determine whether the user can view the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Noticia  $noticia
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function view(User $user, Noticia $noticia)
+    {
+        return $user->id === $noticia->user_id;
+    }
+
+    /**
+     * Determine whether the user can create models.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function create(User $user)
+    {
+        return $user->admin <= 1;
+    }
+
+    /**
+     * Determine whether the user can update the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Noticia  $noticia
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function update(User $user, Noticia $noticia)
+    {
+        return $user->id === $noticia->user_id;
+    }
+
+    /**
+     * Determine whether the user can delete the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Noticia  $noticia
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function delete(User $user, Noticia $noticia)
+    {
+        return $user->id === $noticia->user_id;
+    }
+
+    /**
+     * Determine whether the user can restore the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Noticia  $noticia
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function restore(User $user, Noticia $noticia)
+    {
+        //
+    }
+
+    /**
+     * Determine whether the user can permanently delete the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Noticia  $noticia
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function forceDelete(User $user, Noticia $noticia)
+    {
+        //
+    }
+}
+
+===
+app/Http/Controllers/NoticiaController.php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\StoreNoticiaRequest;
+use App\Http\Requests\UpdateNoticiaRequest;
+use App\Http\Controllers\Requests;
+use App\Models\Noticia;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+
+class NoticiaController extends Controller
+{
+    public function __construct()
+    {
+        $this->middleware('auth');   
+    }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        //echo "[ Index de Noticias ]";
+
+        $noticias = Noticia::all();
+        return view('viewsNoticias.index', compact('noticias'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //$this->authorize('criar-noticia');
+        $this->authorize('create', Noticia::class);
+
+        return view('viewsNoticias.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \App\Http\Requests\StoreNoticiaRequest  $request
+     * @return \Illuminate\Http\Response
+     */
+    /**Observe que aqui o Request foi personalizado devido a criacao do Model utilizando o --all
+     * Assim, ele verifica se o usuario tem autorizacao para realizar a requisicao no arquivo
+     * StoreNoticiaRequest. Isso tambem vale para o update
+     */
+    //public function store(Request $request)
+    public function store(StoreNoticiaRequest $request)
+    {
+        //echo "Metodo STORE";
+        $this->authorize('create', Noticia::class);
+        
+        $novanoticia = new Noticia();
+        $novanoticia->titulo = $request->titulo;
+        $novanoticia->descricao = $request->descricao;
+        $novanoticia->user_id = auth()->user()->id;
+
+        $novanoticia->save();
+
+        return redirect()->route('noticias.index');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Noticia  $noticia
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Noticia $noticia)
+    {
+        //$this->authorize('visualizar-noticia', $noticia);
+        $this->authorize('view', $noticia);
+
+        /*
+        if(Gate::denies('visualizar-noticia', $noticia)){
+            abort(403);
+        }
+        */
+
+        return view('viewsNoticias.show', compact(['noticia']));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Noticia  $noticia
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Noticia $noticia)
+    {
+        //$this->authorize('editar-noticia', $noticia);
+        $this->authorize('update', $noticia);
+
+        return view('viewsNoticias.edit', compact(['noticia']));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \App\Http\Requests\UpdateNoticiaRequest  $request
+     * @param  \App\Models\Noticia  $noticia
+     * @return \Illuminate\Http\Response
+     */
+    public function update(UpdateNoticiaRequest $request, Noticia $noticia)
+    {
+        //echo "Metodo UPDATE";
+        $this->authorize('update', $noticia);
+
+        $noticia->titulo = $request->titulo;   
+        $noticia->descricao = $request->descricao;
+        $noticia->save();
+        
+        return redirect()->route('noticias.index');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Noticia  $noticia
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Noticia $noticia)
+    {   
+        //$this->authorize('excluir-noticia', $noticia);
+        $this->authorize('delete', $noticia);
+
+        $noticia = Noticia::find($noticia->id);
+        
+        if(!isset($noticia)){
+            $msg = "Não há [ Noticia ], com identificador [ $noticia->id ], registrada no sistema!";
+            $link = "noticias.index";
+            return view('noticias.erroid', compact(['msg', 'link']));
+        }
+        
+        Noticia::destroy($noticia->id);
+        
+        return redirect()->route('noticias.index');
+        
+    }
+}
+
+
 
 
 
