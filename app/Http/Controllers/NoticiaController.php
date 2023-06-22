@@ -36,7 +36,9 @@ class NoticiaController extends Controller
      */
     public function create()
     {
-        //echo "Metodo CREATE";
+        //$this->authorize('criar-noticia');
+        $this->authorize('create', Noticia::class);
+
         return view('viewsNoticias.create');
     }
 
@@ -54,6 +56,7 @@ class NoticiaController extends Controller
     public function store(StoreNoticiaRequest $request)
     {
         //echo "Metodo STORE";
+        $this->authorize('create', Noticia::class);
         
         $novanoticia = new Noticia();
         $novanoticia->titulo = $request->titulo;
@@ -74,10 +77,13 @@ class NoticiaController extends Controller
     public function show(Noticia $noticia)
     {
         //$this->authorize('visualizar-noticia', $noticia);
+        $this->authorize('view', $noticia);
 
+        /*
         if(Gate::denies('visualizar-noticia', $noticia)){
             abort(403);
         }
+        */
 
         return view('viewsNoticias.show', compact(['noticia']));
     }
@@ -90,7 +96,8 @@ class NoticiaController extends Controller
      */
     public function edit(Noticia $noticia)
     {
-        $this->authorize('editar-noticia', $noticia);
+        //$this->authorize('editar-noticia', $noticia);
+        $this->authorize('update', $noticia);
 
         return view('viewsNoticias.edit', compact(['noticia']));
     }
@@ -105,6 +112,8 @@ class NoticiaController extends Controller
     public function update(UpdateNoticiaRequest $request, Noticia $noticia)
     {
         //echo "Metodo UPDATE";
+        $this->authorize('update', $noticia);
+
         $noticia->titulo = $request->titulo;   
         $noticia->descricao = $request->descricao;
         $noticia->save();
@@ -120,7 +129,8 @@ class NoticiaController extends Controller
      */
     public function destroy(Noticia $noticia)
     {   
-        $this->authorize('excluir-noticia', $noticia);
+        //$this->authorize('excluir-noticia', $noticia);
+        $this->authorize('delete', $noticia);
 
         $noticia = Noticia::find($noticia->id);
         
