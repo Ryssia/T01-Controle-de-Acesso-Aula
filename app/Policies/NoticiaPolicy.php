@@ -31,6 +31,7 @@ class NoticiaPolicy
     public function view(User $user, Noticia $noticia)
     {
         return (($user->id === $noticia->user_id) || ($user->admin == 1));
+        
     }
 
     /**
@@ -53,7 +54,7 @@ class NoticiaPolicy
      */
     public function update(User $user, Noticia $noticia)
     {
-        return $user->id === $noticia->user_id;
+        return (($user->id === $noticia->user_id) || ($user->admin == 1));
     }
 
     /**
