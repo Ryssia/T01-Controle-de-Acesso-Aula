@@ -837,9 +837,27 @@ class User extends Authenticatable
 [ ... ]
 
 
+app/Policies/NoticiaPolicy.php
+[ ... ]
+    /**
+     * Determine whether the user can view the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Noticia  $noticia
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function view(User $user, Noticia $noticia)
+    {
+        //return true;
+        return $user->id === $noticia->user_id || $user->hasPermissionTo('viewNoticia');
+        //return (($user->id === $noticia->user_id) || ($user->admin == 1));
+        
+    }
+[ ... ]
 
+php artisan tinker < spatie_script.php
 
-
+php artisan permission:cache-reset
 
 
 

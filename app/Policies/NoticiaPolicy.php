@@ -30,7 +30,9 @@ class NoticiaPolicy
      */
     public function view(User $user, Noticia $noticia)
     {
-        return true;
+        //return true;
+        //return $user->id === $noticia->user_id || $user->hasPermissionTo('viewNoticia');
+        return $user->id === $noticia->user_id || $user->hasRole('admin');
         //return (($user->id === $noticia->user_id) || ($user->admin == 1));
         
     }
