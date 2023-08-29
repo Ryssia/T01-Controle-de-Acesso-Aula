@@ -44,8 +44,7 @@
                                             @endif
                                     @endforeach    
                                     
-                                    <input class="form-check-input me-1" type="checkbox" name="permissoes[]" id="{{$permission->name}}" @if($flag) checked @endif value="{{ $permission->name }}" aria-label="...">
-                                                
+                                        <input class="form-check-input me-1" type="checkbox" name="permissoes[]" id="{{$permission->name}}" @if($flag) checked @endif value="{{ $permission->name }}" aria-label="...">
                                             
                                     </div>
                                     </td>
@@ -57,6 +56,9 @@
                         </table>
         
                 <button type="submit" class="btn btn-outline-primary">Salvar</button>
+
+                <button class="btn btn-secondary">
+                <a href="{{route('papeis.index')}}">Voltar</a> 
         </form>
                             
                         

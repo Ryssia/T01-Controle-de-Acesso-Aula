@@ -28,6 +28,10 @@ Route::resource('/noticias', NoticiaController::class);
 
 Route::get('/papeis', 'App\Http\Controllers\PapeisController@index')->name('papeis.index');
 Route::get('/papeis/create', 'App\Http\Controllers\PapeisController@create')->name('papeis.create');
+Route::post('/papeis', 'App\Http\Controllers\PapeisController@store')->name('papeis.store');
+Route::get('/papeis/{role}/edit', 'App\Http\Controllers\PapeisController@edit')->name('papeis.edit');
+Route::put('/papeis/{role}', 'App\Http\Controllers\PapeisController@update')->name('papeis.update');
+Route::delete('/papeis/{role}', 'App\Http\Controllers\PapeisController@destroy')->name('papeis.destroy');
 
 Route::get('/permissoes/{role}', 'App\Http\Controllers\PermissoesController@index')->name('permissoes.index');
 Route::post('/permissoes', 'App\Http\Controllers\PermissoesController@store')->name('permissoes.store');

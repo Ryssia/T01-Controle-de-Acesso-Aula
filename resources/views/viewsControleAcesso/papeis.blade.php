@@ -41,10 +41,10 @@
                                         <!-- can('excluir-noticia', $noticia) -->
                                             <!--can('delete', $noticia)-->
                                             <div style="margin-right:2%;">
-                                                <form method="post" action="#">
-                                            
+                                                <form method="post" action=" {{ route('papeis.destroy', $role) }} "
+                                                    onsubmit="return confirm('Tem certeza que deseja REMOVER {{ addslashes($role->name) }}?')">
                                                     @csrf
-                                    
+                                                    @method('DELETE')
                                                     <button class="btn btn-outline-danger">
                                                         Excluir
                                                     </button>
@@ -57,7 +57,7 @@
                                             <!--can('update', $noticia)-->
                                             <div style="margin-right:2%;">
                                                 <button type="button" class="btn btn-outline-success">
-                                                    <a href="#">Editar</a>
+                                                    <a href="{{ route('papeis.edit', $role) }}">Editar</a>
                                                 </button>
                                             </div>
                                             
