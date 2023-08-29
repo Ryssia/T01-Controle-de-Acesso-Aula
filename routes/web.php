@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\NoticiaController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PapeisController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,5 +25,15 @@ Route::get('/dashboard', function () {
 
 //Route::resource('/noticias', NoticiaController::class)->middleware(['auth']);
 Route::resource('/noticias', NoticiaController::class);
+
+Route::get('/papeis', 'App\Http\Controllers\PapeisController@index')->name('papeis.index');
+Route::get('/papeis/create', 'App\Http\Controllers\PapeisController@create')->name('papeis.create');
+
+Route::get('/permissoes/{role}', 'App\Http\Controllers\PermissoesController@index')->name('permissoes.index');
+Route::post('/permissoes', 'App\Http\Controllers\PermissoesController@store')->name('permissoes.store');
+
+Route::get('/usuarios', function(){
+    return view('viewsControleAcesso.usuarios');
+})->name('usuarios.index');
 
 require __DIR__.'/auth.php';
