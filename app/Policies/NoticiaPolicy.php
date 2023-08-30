@@ -30,9 +30,10 @@ class NoticiaPolicy
      */
     public function view(User $user, Noticia $noticia)
     {
+        return $user->id === $noticia->user_id || $user->hasPermissionTo('viewNoticia');
         //return true;
         //return $user->id === $noticia->user_id || $user->hasPermissionTo('viewNoticia');
-        return $user->id === $noticia->user_id || $user->hasRole('admin');
+        //return $user->id === $noticia->user_id || $user->hasRole('admin');
         //return (($user->id === $noticia->user_id) || ($user->admin == 1));
         
     }
@@ -45,6 +46,7 @@ class NoticiaPolicy
      */
     public function create(User $user)
     {
+        $user->hasPermissionTo('createNoticia');
         return true;
         //return $user->admin <= 1;
     }
@@ -58,7 +60,8 @@ class NoticiaPolicy
      */
     public function update(User $user, Noticia $noticia)
     {
-        return $user->id === $noticia->user_id;
+        return $user->id === $noticia->user_id || $user->hasPermissionTo('updateNoticia');
+        //return $user->id === $noticia->user_id;
         //return (($user->id === $noticia->user_id) || ($user->admin == 1));
     }
 
@@ -71,7 +74,8 @@ class NoticiaPolicy
      */
     public function delete(User $user, Noticia $noticia)
     {
-        return $user->id === $noticia->user_id;
+        return $user->id === $noticia->user_id || $user->hasPermissionTo('deleteNoticia');
+        //return $user->id === $noticia->user_id;
         //return (($user->id === $noticia->user_id) || ($user->admin == 1));
     }
 

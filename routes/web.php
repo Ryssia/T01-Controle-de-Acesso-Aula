@@ -36,8 +36,9 @@ Route::delete('/papeis/{role}', 'App\Http\Controllers\PapeisController@destroy')
 Route::get('/permissoes/{role}', 'App\Http\Controllers\PermissoesController@index')->name('permissoes.index');
 Route::post('/permissoes', 'App\Http\Controllers\PermissoesController@store')->name('permissoes.store');
 
-Route::get('/usuarios', function(){
-    return view('viewsControleAcesso.usuarios');
-})->name('usuarios.index');
+Route::get('/usuarios', 'App\Http\Controllers\UsuariosController@index')->name('usuarios.index');
+Route::get('/usuarios/{user}', 'App\Http\Controllers\UsuariosController@userRoles')->name('usuarios.papeis');
+Route::post('/usuarios/{user}', 'App\Http\Controllers\UsuariosController@store')->name('usuarios.store');
+
 
 require __DIR__.'/auth.php';
