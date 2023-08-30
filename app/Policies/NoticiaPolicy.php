@@ -46,8 +46,8 @@ class NoticiaPolicy
      */
     public function create(User $user)
     {
-        $user->hasPermissionTo('createNoticia');
-        return true;
+        return $user->hasPermissionTo('createNoticia');
+        //return true;
         //return $user->admin <= 1;
     }
 
