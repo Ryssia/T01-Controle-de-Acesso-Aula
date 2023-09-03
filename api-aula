@@ -1,0 +1,25 @@
+Arquivo: routes/api.php
+
+rotas da api
+===
+
+Arquivo: app/Http/Controllers/Api/NoticiaController.php
+
+controller da api
+===
+
+Arquivo: app/Models/Noticia.php
+
+incluimos 
+/**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'titulo',
+        'descricao',
+        'user_id',
+    ];
+===
+

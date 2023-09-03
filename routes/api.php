@@ -22,7 +22,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 //Route::get('/noticias', 'App\Http\Controllers\Api\NoticiaController@index');
 Route::apiResource('noticias', NoticiaController::class);
-
+Route::patch('/noticias/{noticia}', function(Noticia $noticia, Request $request){
+    $noticia->titulo = $request->titulo;
+    $noticia->save();
+    return $noticia;
+});
 /*
 Route::get('/noticias', function(){
     return response()->json(Noticia::all());

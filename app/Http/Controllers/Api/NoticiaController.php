@@ -21,4 +21,27 @@ class NoticiaController extends Controller
 
     }
 
+    public function show(Noticia $noticia){
+
+        return response()->json($noticia, 200);
+    }
+
+    public function update(Noticia $noticia, Request $request){
+
+        $noticia->titulo = $request->titulo;   
+        $noticia->descricao = $request->descricao;
+        $noticia->user_id = $request->user_id;
+        $noticia->save();
+        
+        return response()->json($noticia, 200);
+    }
+
+    public function destroy(Noticia $noticia){
+
+        Noticia::destroy($noticia->id);
+
+        return response()->noContent();
+
+    }
+
 }
