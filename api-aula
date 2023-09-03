@@ -23,3 +23,27 @@ incluimos
     ];
 ===
 
+instalar o sanctum
+composer require laravel/sanctum
+
+publicar
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+
+rodar as migrations
+php artisan migrate
+
+em: app/Http/Kernel.php
+
+descomentar a linha: \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+
+
+===
+
+return ['token' => $token->plainTextToken];
+token: 4|laravel_sanctum_W7AhA0ea3LXp04q9ojiGwRpCQxsBVqDUN7TZrNoy9fcf9b28
+
+
+
+
+
+
