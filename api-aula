@@ -40,7 +40,8 @@ descomentar a linha: \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreS
 ===
 
 return ['token' => $token->plainTextToken];
-token: 4|laravel_sanctum_W7AhA0ea3LXp04q9ojiGwRpCQxsBVqDUN7TZrNoy9fcf9b28
+token diego: 1|laravel_sanctum_zWYf1glXRKITjWiJneD8hZo4U9i1FTaY8wwgJOSm329e15af
+token douglas: 2|laravel_sanctum_OKZPgTzbPVu4szZwnMB9w5YuDT5AlRDsyD8B9FnW3d99b9be
 
 
 ===

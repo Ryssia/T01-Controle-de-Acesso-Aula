@@ -9,6 +9,12 @@ use Illuminate\Http\Request;
 class NoticiaController extends Controller
 {
 
+    public function __construct()
+    {
+        //$this->middleware('auth');   
+        $this->authorizeResource(Noticia::class, 'noticia');
+    }
+
     public function index(){
 
         return response()->json(Noticia::all());
@@ -24,11 +30,12 @@ class NoticiaController extends Controller
 
     public function show(Noticia $noticia){
 
-        $user = auth('sanctum')->user();
+        //$this->authorize('view', $noticia);
+        /*$user = auth('sanctum')->user();
         if(! $user->can('view', $noticia)){
             return response()->json('Nao Autorizado', 401);
-        }
-        
+        }*/
+
         return response()->json($noticia, 200);
     }
 
