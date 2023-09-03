@@ -43,6 +43,18 @@ return ['token' => $token->plainTextToken];
 token: 4|laravel_sanctum_W7AhA0ea3LXp04q9ojiGwRpCQxsBVqDUN7TZrNoy9fcf9b28
 
 
+===
+
+//$user = auth('sanctum')->user();
+        //$user->hasPermissionTo('updateNoticia');
+
+
+
+
+
+
+
+
 
 
 

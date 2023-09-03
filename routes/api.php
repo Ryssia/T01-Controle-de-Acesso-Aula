@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -24,10 +27,22 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 //Route::get('/noticias', 'App\Http\Controllers\Api\NoticiaController@index');
-Route::apiResource('noticias', NoticiaController::class);
+//Route::apiResource('noticias', NoticiaController::class);
 
 Route::middleware('auth:sanctum')->group(function(){
+    
+    Route::apiResource('noticias', NoticiaController::class);
+    
     Route::patch('/noticias/{noticia}', function(Noticia $noticia, Request $request){
+
+        $user = auth('sanctum')->user();
+        //$retorno = $user->hasPermissionTo('updateNoticia');
+        //$retorno = $user->can('update', $noticia);
+        //dd($retorno);
+        if(! $user->can('update', $noticia)){
+            return response()->json('Nao Autorizado', 401);
+        }
+
         $noticia->titulo = $request->titulo;
         $noticia->save();
         return $noticia;
@@ -43,6 +58,7 @@ Route::post('/login', function(Request $request){
         }
 
         $user = Auth::user();
+        $user->tokens()->delete();
         $token = $user->createToken('token');
         //dd($token);
 
