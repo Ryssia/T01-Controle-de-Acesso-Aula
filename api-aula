@@ -49,6 +49,374 @@ token douglas: 2|laravel_sanctum_OKZPgTzbPVu4szZwnMB9w5YuDT5AlRDsyD8B9FnW3d99b9b
 //$user = auth('sanctum')->user();
         //$user->hasPermissionTo('updateNoticia');
 
+=== api noticiacontroller
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\Noticia;
+use Illuminate\Http\Request;
+
+class NoticiaController extends Controller
+{
+
+    public function __construct()
+    {
+        //$this->middleware('auth');   
+        $this->authorizeResource(Noticia::class, 'noticia');
+    }
+
+    public function index(){
+
+        return response()->json(Noticia::all());
+
+    }
+
+    public function store(Request $request){
+
+        $noticia = Noticia::create($request->all());
+        return response()->json($noticia, 201);
+
+    }
+
+    public function show(Noticia $noticia){
+
+        //$this->authorize('view', $noticia);
+        /*$user = auth('sanctum')->user();
+        if(! $user->can('view', $noticia)){
+            return response()->json('Nao Autorizado', 401);
+        }*/
+
+        return response()->json($noticia, 200);
+    }
+
+    public function update(Noticia $noticia, Request $request){
+
+        $noticia->titulo = $request->titulo;   
+        $noticia->descricao = $request->descricao;
+        $noticia->user_id = $request->user_id;
+        $noticia->save();
+        
+        return response()->json($noticia, 200);
+    }
+
+    public function destroy(Noticia $noticia){
+
+        Noticia::destroy($noticia->id);
+
+        return response()->noContent();
+
+    }
+
+}
+=== model noticia.php (para api)
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Noticia extends Model
+{
+    use HasFactory;
+    use SoftDeletes;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'titulo',
+        'descricao',
+        'user_id',
+    ];
+
+    public const TABELA_NOTICIA = "noticias";
+
+    public const CAMPO_DELETED_AT = "deleted_at";
+    public const CAMPO_CREATED_AT = "created_at";
+    public const CAMPO_UPDATED_AT = "updated_at";
+
+    public const CAMPO_ID = "id";
+    public const CAMPO_TITULO = "titulo";
+    public const CAMPO_DESCRICAO = "descricao";
+    public const CAMPO_USERID = "user_id";
+    
+    
+}
+
+===
+
+noticiapolicy.php
+<?php
+
+namespace App\Policies;
+
+use App\Models\Noticia;
+use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
+
+class NoticiaPolicy
+{
+    use HandlesAuthorization;
+
+    /**
+     * Determine whether the user can view any models.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function viewAny(User $user)
+    {
+        return true;
+    }
+
+    /**
+     * Determine whether the user can view the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Noticia  $noticia
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function view(User $user, Noticia $noticia)
+    {
+        return $user->id === $noticia->user_id || $user->hasPermissionTo('viewNoticia');
+        //return true;
+        //return $user->id === $noticia->user_id || $user->hasPermissionTo('viewNoticia');
+        //return $user->id === $noticia->user_id || $user->hasRole('admin');
+        //return (($user->id === $noticia->user_id) || ($user->admin == 1));
+        
+    }
+
+    /**
+     * Determine whether the user can create models.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function create(User $user)
+    {
+        return $user->hasPermissionTo('createNoticia');
+        //return true;
+        //return $user->admin <= 1;
+    }
+
+    /**
+     * Determine whether the user can update the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Noticia  $noticia
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function update(User $user, Noticia $noticia)
+    {
+        return $user->id === $noticia->user_id || $user->hasPermissionTo('updateNoticia');
+        //return $user->id === $noticia->user_id;
+        //return (($user->id === $noticia->user_id) || ($user->admin == 1));
+    }
+
+    /**
+     * Determine whether the user can delete the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Noticia  $noticia
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function delete(User $user, Noticia $noticia)
+    {
+        return $user->id === $noticia->user_id || $user->hasPermissionTo('deleteNoticia');
+        //return $user->id === $noticia->user_id;
+        //return (($user->id === $noticia->user_id) || ($user->admin == 1));
+    }
+
+    /**
+     * Determine whether the user can restore the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Noticia  $noticia
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function restore(User $user, Noticia $noticia)
+    {
+        //
+    }
+
+    /**
+     * Determine whether the user can permanently delete the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Noticia  $noticia
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function forceDelete(User $user, Noticia $noticia)
+    {
+        //
+    }
+}
+
+=== kernel.php
+
+<?php
+
+namespace App\Http;
+
+use Illuminate\Foundation\Http\Kernel as HttpKernel;
+
+class Kernel extends HttpKernel
+{
+    /**
+     * The application's global HTTP middleware stack.
+     *
+     * These middleware are run during every request to your application.
+     *
+     * @var array<int, class-string|string>
+     */
+    protected $middleware = [
+        // \App\Http\Middleware\TrustHosts::class,
+        \App\Http\Middleware\TrustProxies::class,
+        \Illuminate\Http\Middleware\HandleCors::class,
+        \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
+        \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
+        \App\Http\Middleware\TrimStrings::class,
+        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+    ];
+
+    /**
+     * The application's route middleware groups.
+     *
+     * @var array<string, array<int, class-string|string>>
+     */
+    protected $middlewareGroups = [
+        'web' => [
+            \App\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
+
+        'api' => [
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            'throttle:api',
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
+    ];
+
+    /**
+     * The application's route middleware.
+     *
+     * These middleware may be assigned to groups or used individually.
+     *
+     * @var array<string, class-string|string>
+     */
+    protected $routeMiddleware = [
+        'auth' => \App\Http\Middleware\Authenticate::class,
+        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
+        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+        'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
+        'signed' => \App\Http\Middleware\ValidateSignature::class,
+        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+    ];
+}
+
+===
+
+routes: api.php
+
+<?php
+
+use App\Http\Controllers\Api\NoticiaController;
+use App\Models\Noticia;
+use App\Models\User;
+use GuzzleHttp\Middleware;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
+//use Spatie\Permission\Models\Role;
+//use Spatie\Permission\Models\Permission;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group. Enjoy building your API!
+|
+*/
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+//Route::get('/noticias', 'App\Http\Controllers\Api\NoticiaController@index');
+//Route::apiResource('noticias', NoticiaController::class);
+
+Route::middleware('auth:sanctum')->group(function(){
+    
+    Route::apiResource('noticias', NoticiaController::class);
+    
+    Route::patch('/noticias/{noticia}', function(Noticia $noticia, Request $request){
+
+        $user = auth('sanctum')->user();
+        //$retorno = $user->hasPermissionTo('updateNoticia');
+        //$retorno = $user->can('update', $noticia);
+        //dd($retorno);
+        if(! $user->can('update', $noticia)){
+            return response()->json('Nao Autorizado', 403);
+        }
+
+        $noticia->titulo = $request->titulo;
+        $noticia->save();
+        return $noticia;
+    });
+});
+
+Route::post('/login', function(Request $request){
+
+        $credenciais = $request->only(['name', 'email', 'password']);
+        
+        if(Auth::attempt($credenciais) === false){
+            return response()->json('Nao Autorizado', 401);
+        }
+
+        $user = Auth::user();
+        $user->tokens()->delete();
+        $token = $user->createToken('token');
+        //dd($token);
+
+        return response()->json(['token' => $token->plainTextToken]);
+        
+        
+
+});
+
+/*
+Route::get('/noticias', function(){
+    return response()->json(Noticia::all());
+});
+*/
+
+===
+
+
+
+
+
+
+
+
 
 
 
