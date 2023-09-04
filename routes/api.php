@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
+//use Spatie\Permission\Models\Role;
+//use Spatie\Permission\Models\Permission;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,7 +40,7 @@ Route::middleware('auth:sanctum')->group(function(){
         //$retorno = $user->can('update', $noticia);
         //dd($retorno);
         if(! $user->can('update', $noticia)){
-            return response()->json('Nao Autorizado', 401);
+            return response()->json('Nao Autorizado', 403);
         }
 
         $noticia->titulo = $request->titulo;
