@@ -29,12 +29,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //Route::get('/noticias', 'App\Http\Controllers\Api\NoticiaController@index');
 //Route::apiResource('noticias', NoticiaController::class);
 
-Route::middleware('auth:sanctum')->group(function(){
+//desabilitar autenticacao
+//Route::middleware('auth:sanctum')->group(function(){
     
     Route::apiResource('noticias', NoticiaController::class);
     
     Route::patch('/noticias/{noticia}', function(Noticia $noticia, Request $request){
 
+        /*
         $user = auth('sanctum')->user();
         //$retorno = $user->hasPermissionTo('updateNoticia');
         //$retorno = $user->can('update', $noticia);
@@ -42,12 +44,13 @@ Route::middleware('auth:sanctum')->group(function(){
         if(! $user->can('update', $noticia)){
             return response()->json('Nao Autorizado', 403);
         }
+        */
 
         $noticia->titulo = $request->titulo;
         $noticia->save();
         return $noticia;
     });
-});
+//}); desabilita autenticacao
 
 Route::post('/login', function(Request $request){
 

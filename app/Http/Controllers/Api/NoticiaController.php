@@ -11,8 +11,11 @@ class NoticiaController extends Controller
 
     public function __construct()
     {
-        //$this->middleware('auth');   
-        $this->authorizeResource(Noticia::class, 'noticia');
+
+        //$this->middleware('auth');  este metodo nao funciona porque o modelo
+        //de autenticacao do middleware auth nao eh baseado em token 
+        
+        //$this->authorizeResource(Noticia::class, 'noticia');
     }
 
     public function index(){
