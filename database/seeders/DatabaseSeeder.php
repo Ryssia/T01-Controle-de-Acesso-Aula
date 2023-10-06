@@ -21,10 +21,12 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        
+
         $this->call([
+            AdminSeeder::class,
             UserSeeder::class,
             NoticiaSeeder::class,
+            SpatieSeeder::class,
         ]);
     }
 }

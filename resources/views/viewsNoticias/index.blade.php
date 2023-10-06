@@ -7,13 +7,15 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    @if(Auth::check())
-                    <div style="margin-bottom:2%;">
-                        <button type="button" class="btn btn-outline-primary">
-                            <a href="{{ route('noticias.create') }}">Criar Noticia</a>
-                        </button>
-                    </div>
-                    @endif
+                    @can('create', \App\Models\Noticias::class)
+                        @if(Auth::check())
+                        <div style="margin-bottom:2%;">
+                            <button type="button" class="btn btn-outline-primary">
+                                <a href="{{ route('noticias.create') }}">Criar Noticia</a>
+                            </button>
+                        </div>
+                        @endif
+                    @endcan
                     <!--<ul class="list-group">-->
                         <table class="table">
                             <thead>
@@ -26,7 +28,7 @@
                                 </tr>
                             </thead>
 
-                            <tbody>    
+                            <tbody>
                                 @foreach($noticias as $noticia)
                                 <tr>
                                 <!--<li class="list-group-item d-flex justify-content-between align-items-center">-->
@@ -36,9 +38,9 @@
                                     <td> {{ $noticia->user_id }} </td>
                                     <td>
 
-                                    <div style="display:flex">    
+                                    <div style="display:flex">
                                     @auth
-                                        <!--can('delete', $noticia)-->
+                                        @can('delete', $noticia)
                                             <div style="margin-right:2%;">
                                                 <form method="post" action=" {{ route('noticias.destroy', $noticia) }} "
                                                     onsubmit="return confirm('Tem certeza que deseja REMOVER {{ addslashes($noticia->titulo) }}?')">
@@ -49,23 +51,23 @@
                                                     </button>
                                                 </form>
                                             </div>
-                                        <!--endcan-->
-                                        
-                                        <!--can('atualizar', $noticia)-->
+                                        @endcan
+
+                                        @can('update', $noticia)
                                             <div style="margin-right:2%;">
                                                 <button type="button" class="btn btn-outline-success">
                                                     <a href="{{ route('noticias.edit', $noticia) }}">Editar</a>
                                                 </button>
                                             </div>
-                                        <!--endcan-->
-                                        
-                                        <!--can('view', $noticia)-->
+                                        @endcan
+
+                                        @can('view', $noticia)
                                             <div style="margin-right:2%;">
                                                 <button type="button" class="btn btn-outline-info">
                                                     <a href="{{ route('noticias.show', $noticia) }}">Visualizar</a>
                                                 </button>
                                             </div>
-                                        <!--endcan-->
+                                        @endcan
                                     @endauth
                                     </div>
                                     </td>
@@ -73,10 +75,10 @@
 
                                 </tr>
                                 @endforeach
-                                
+
                             </tbody>
                         </table>
 
-        </div>            
+        </div>
     </div>
 </x-app-layout>
