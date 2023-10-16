@@ -30,7 +30,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //Route::apiResource('noticias', NoticiaController::class);
 
 //desabilitar autenticacao
-//Route::middleware('auth:sanctum')->group(function(){
+Route::middleware('auth:sanctum')->group(function(){
     
     Route::apiResource('noticias', NoticiaController::class);
     
@@ -50,10 +50,32 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         $noticia->save();
         return $noticia;
     });
-//}); desabilita autenticacao
+});
 
 Route::post('/login', function(Request $request){
 
+    $credenciais = $request->only(['name', 'email', 'password']);
+    //dd($credenciais);
+
+    if(Auth::attempt($credenciais) === false){
+        return response()->json("usuario nao autorizado");
+    }
+
+    $user = Auth::user();
+    $user->tokens()->delete();
+    $token = $user->createToken('token');
+    return response()->json(['token' => $token->plainTextToken]);
+
+
+
+
+
+
+
+
+
+
+/*
         $credenciais = $request->only(['name', 'email', 'password']);
         
         if(Auth::attempt($credenciais) === false){
@@ -67,7 +89,7 @@ Route::post('/login', function(Request $request){
 
         return response()->json(['token' => $token->plainTextToken]);
         
-        
+    */    
 
 });
 
