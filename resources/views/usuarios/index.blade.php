@@ -1,4 +1,4 @@
-@role('admin', 'admin')
+@if(Auth::guard('admin')->check())
     <x-app-layout>
         <x-slot name="header">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -19,6 +19,28 @@
                     </thead>
 
                     <tbody>
+                        @foreach($usersAdmin as $user)
+                        <tr>
+                        <!--<li class="list-group-item d-flex justify-content-between align-items-center">-->
+                            <th scope="row"> {{ $user->id }} </th>
+                            <td> {{ $user->name }} </td>
+                            <td>
+
+                            <div style="display:flex">
+                            @auth
+                                <div style="margin-right:2%;">
+                                    <button type="button" class="btn btn-outline-info">
+                                        <a href="{{ route('usuarios.show', $user->id) }}">Papeis do Usuario</a>
+                                    </button>
+                                </div>
+                            @endauth
+                            </div>
+                            </td>
+                        <!--</li>-->
+
+                        </tr>
+                        @endforeach
+
                         @foreach($users as $user)
                         <tr>
                         <!--<li class="list-group-item d-flex justify-content-between align-items-center">-->
@@ -30,7 +52,7 @@
                             @auth
                                 <div style="margin-right:2%;">
                                     <button type="button" class="btn btn-outline-info">
-                                        <a href="{{ route('usuarios.show', $user->id) }}">Permissoes do Usuario</a>
+                                        <a href="{{ route('usuarios.show', $user->id) }}">Papeis do Usuario</a>
                                     </button>
                                 </div>
                             @endauth
@@ -46,4 +68,4 @@
             </div>
         </div>
     </x-app-layout>
-@endrole
+@endif

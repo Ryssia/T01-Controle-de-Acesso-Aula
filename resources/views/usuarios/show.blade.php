@@ -30,7 +30,8 @@
                                 <div style="display:flex">
                                 @auth
                                     <div class="form-check form-check">
-                                        <input class="form-check-input" type="checkbox" name="role[]" id="role" value="{{$role->name}}" <?php echo ($user->hasRole($role->name)) ? "checked" : null; ?>/>
+                                        <input class="form-check-input" type="checkbox" name="role[]" value="{{$role->name}}"
+                                         <?php echo ($user->hasRole($role->name) || $userAdmin->hasRole($role->name)) ? "checked" : null; ?>/>
                                     </div>
                                 @endauth
                                 </div>
