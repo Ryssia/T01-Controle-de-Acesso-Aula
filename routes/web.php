@@ -41,4 +41,33 @@ Route::get('/usuarios/{user}', 'App\Http\Controllers\UsuariosController@userRole
 Route::post('/usuarios/{user}', 'App\Http\Controllers\UsuariosController@store')->name('usuarios.store');
 
 
+use Laravel\Socialite\Facades\Socialite;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
+Route::get('/auth/redirect/{provider}', function ($provider) {
+    return Socialite::driver($provider)->redirect();
+})->name('social.login');
+ 
+Route::get('/auth/callback/{provider}', function ($provider) {
+    $userProvider = Socialite::driver($provider)->user();
+ 
+    //dd($user);
+    
+    $user = User::firstOrCreate([
+        "email" => $userProvider->email
+    ],[
+        "name" => $userProvider->name,
+        "provider" => $provider,
+        "provider_id" => $userProvider->id,
+        "admin" => 0
+    ]);
+
+    Auth::login($user);
+
+    return redirect('/dashboard');
+
+
+})->name('social.callback');
+
 require __DIR__.'/auth.php';
