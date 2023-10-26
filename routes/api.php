@@ -18,17 +18,18 @@ use Illuminate\Support\Facades\Redis;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('auth:sanctum')->group(function () {
 
-Route::apiResource('noticias', NoticiaController::class);
 
-Route::patch('/noticias/{noticia}', function(Request $request, Noticia $noticia){
-    $noticia->titulo = $request->titulo;
-    $noticia->save();
+    Route::apiResource('noticias', NoticiaController::class);
 
-    return response()->json($noticia,200);
+    Route::patch('/noticias/{noticia}', function(Request $request, Noticia $noticia){
+        $noticia->titulo = $request->titulo;
+        $noticia->save();
+
+        return response()->json($noticia,200);
+    });
+
 });
 
 Route::post('/login', function(Request $request){
@@ -39,7 +40,7 @@ Route::post('/login', function(Request $request){
     }
 
     $user = Auth::user();
-    //$user->tokens()->delete();
+    $user->tokens()->delete();
     $token = $user->createToken('token');
     return response()->json(['token' => $token->plainTextToken]);
 });
