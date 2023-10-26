@@ -18,7 +18,7 @@ class NoticiaPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return true;
     }
 
     /**
@@ -30,7 +30,7 @@ class NoticiaPolicy
      */
     public function view(User $user, Noticia $noticia)
     {
-        //
+        return $user->id === $noticia->user_id || $user->hasPermissionTo('viewNoticia') ;
     }
 
     /**

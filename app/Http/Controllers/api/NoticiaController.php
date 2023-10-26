@@ -24,6 +24,11 @@ class NoticiaController extends Controller {
 
     public function show(Noticia $noticia){
 
+        //$this->authorize('view', $noticia);
+        $user = auth('sanctum')->user();
+        if(! $user->can('view', $noticia)){
+            return response()->json('Nao Autorizado', 401);
+        }
         return response()->json($noticia, 200);
     }
 
@@ -37,6 +42,10 @@ class NoticiaController extends Controller {
     }
 
     public function destroy(Noticia $noticia){
+
+        if (!auth()->user()->can('destroy', $noticia)) {
+            return response()->json('Não Autorizado', 401);
+        }
         Noticia::destroy($noticia->id);
         return response()->noContent();
     }
