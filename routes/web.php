@@ -24,4 +24,10 @@ Route::get('/dashboard', function () {
 
 Route::resource('/noticias', NoticiaController::class);
 
+Route::get('/api/noticias', function (){
+    $noticias = Noticias::ll();
+    return $noticias;
+});
+
+
 require __DIR__.'/auth.php';
