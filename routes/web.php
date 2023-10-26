@@ -26,6 +26,20 @@ Route::get('/dashboard', function () {
 Route::resource('/noticias', NoticiaController::class);
 
 
+//-------------------------------------------
+
+use Laravel\Socialite\Facades\Socialite;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
+Route::get('/auth/redirect', function () {
+    return Socialite::driver('github')->redirect();
+})->name('github.login');
+
+Route::get('/auth/callback', function () {
+    $userGithub = Socialite::driver('github')->user();
+    dd($userGithub);
+})->name('github.callback');
 
 
 require __DIR__.'/auth.php';

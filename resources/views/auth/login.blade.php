@@ -50,6 +50,10 @@
                 <x-button class="ml-3">
                     {{ __('Log in') }}
                 </x-button>
+
+                <x-button class="ml-3">
+                   <a href="{{ route('github.login')}}"> {{ __('Log in with GitHub') }}</a>
+                </x-button>
             </div>
         </form>
     </x-auth-card>
