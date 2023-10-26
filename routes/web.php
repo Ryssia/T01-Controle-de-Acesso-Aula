@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\NoticiaController;
 use Illuminate\Support\Facades\Route;
+use App\Models\Noticia;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,10 +25,7 @@ Route::get('/dashboard', function () {
 
 Route::resource('/noticias', NoticiaController::class);
 
-Route::get('/api/noticias', function (){
-    $noticias = Noticias::ll();
-    return $noticias;
-});
+
 
 
 require __DIR__.'/auth.php';
