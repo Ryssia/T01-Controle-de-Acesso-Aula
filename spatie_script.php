@@ -1,3 +1,5 @@
+<?php 
+
 /** Script para ativar o funcionamento basico do SPATIE no Laravel
  */
  
@@ -47,3 +49,5 @@ Buscamos o usuario com ID igual a 2 e atribuimos o papel de editor a ele
  */
 $user = User::find(2);
 $user->assignRole('editor');
+
+?>

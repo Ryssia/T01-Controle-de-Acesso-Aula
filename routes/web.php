@@ -31,14 +31,28 @@ Route::resource('/noticias', NoticiaController::class);
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Redis;
 
 Route::get('/auth/redirect', function () {
+
     return Socialite::driver('github')->redirect();
 })->name('github.login');
 
 Route::get('/auth/callback', function () {
+
     $userGithub = Socialite::driver('github')->user();
-    dd($userGithub);
+
+    $user = User::firstOrCreate([
+        "email" => $userGithub->email
+        ],[
+        "name" => $userGithub->name,
+        "admin" => 0
+        ]);
+        Auth::login($user);
+
+        return redirect('/dashboard');
+
 })->name('github.callback');
 
 
