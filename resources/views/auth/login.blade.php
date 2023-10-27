@@ -56,7 +56,7 @@
                 </x-button>
 
                 <x-button class="ml-3">
-                   <a href="{{ route('social.login', ['provider'=>'twitter'])}}"> {{ __('Log in with Google') }}</a>
+                   <a href="{{ route('social.login', ['provider'=>'google'])}}"> {{ __('Log in with Google') }}</a>
                 </x-button>
             </div>
         </form>
