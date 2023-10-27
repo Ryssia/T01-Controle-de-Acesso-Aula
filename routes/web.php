@@ -34,26 +34,29 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Redis;
 
-Route::get('/auth/redirect', function () {
+Route::get('/auth/redirect/{provider}', function ($provider) {
 
-    return Socialite::driver('github')->redirect();
-})->name('github.login');
+    return Socialite::driver($provider)->redirect();
+    })->name('social.login');
 
-Route::get('/auth/callback', function () {
 
-    $userGithub = Socialite::driver('github')->user();
-
+Route::get('/auth/callback/{provider}', function ($provider) {
+    
+    $providerUser = Socialite::driver($provider)->user();
+    //dd($providerUser);
     $user = User::firstOrCreate([
-        "email" => $userGithub->email
-        ],[
-        "name" => $userGithub->name,
-        "admin" => 0
-        ]);
-        Auth::login($user);
-
-        return redirect('/dashboard');
-
-})->name('github.callback');
+    "email" => $providerUser->email
+    ],[
+    "name" => $providerUser->name,
+    "provider" => $provider,
+    "provider_id" => $providerUser->getId(),
+    "admin" => 0
+    ]);
+    //dd($user);
+    Auth::login($user);
+    return redirect('/dashboard');
+    
+    })->name('social.callback');
 
 
 require __DIR__.'/auth.php';
