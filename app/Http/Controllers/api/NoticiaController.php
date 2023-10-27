@@ -34,6 +34,12 @@ class NoticiaController extends Controller {
 
     public function update(Request $request, Noticia $noticia ){
 
+        $user = auth('sanctum')->user();
+
+        if(! $user->can('update', $noticia)){
+            return response()->json('Nao Autorizado', 401);
+        }
+
         $noticia->titulo = $request->titulo;
         $noticia->descricao = $request->descricao;
         $noticia->user_id = $request->user_id;
