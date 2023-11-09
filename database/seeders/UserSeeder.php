@@ -12,10 +12,21 @@ class UserSeeder extends Seeder
     static $nomes = [
         'Diego',
         'Douglas',
+        'Visitante',
+        'Admin',
     ];
     static $emails = [
         'diego@diego.com',
         'douglas@douglas.com',
+        'visitante@visitante.com',
+        'admin@admin.com',
+    ];
+
+    static $admin = [
+        1,
+        0,
+        0,
+        1,
     ];
 
     public function run(){
@@ -24,6 +35,7 @@ class UserSeeder extends Seeder
                 'name' => self::$nomes[$i],
                 'email' => self::$emails[$i],
                 'password' => Hash::make('123456789'),
+                'admin' => self::$admin[$i],
             ]);            
         $user->save();
     }

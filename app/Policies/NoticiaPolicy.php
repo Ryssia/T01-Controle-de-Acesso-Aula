@@ -30,7 +30,8 @@ class NoticiaPolicy
      */
     public function view(User $user, Noticia $noticia)
     {
-        return $user->id === $noticia->user_id || $user->hasPermissionTo('viewNoticia') ;
+        //
+        return $user->id === $noticia->user_id || $user->hasPermissionTo('viewNoticia');
     }
 
     /**
@@ -42,6 +43,7 @@ class NoticiaPolicy
     public function create(User $user)
     {
         //
+        return $user->hasPermissionTo('createNoticia');
     }
 
     /**
@@ -54,6 +56,7 @@ class NoticiaPolicy
     public function update(User $user, Noticia $noticia)
     {
         //
+        return $user->id === $noticia->user_id || $user->hasPermissionTo('updateNoticia');
     }
 
     /**
@@ -66,6 +69,7 @@ class NoticiaPolicy
     public function delete(User $user, Noticia $noticia)
     {
         //
+        return $user->id === $noticia->user_id || $user->hasPermissionTo('deleteNoticia');
     }
 
     /**

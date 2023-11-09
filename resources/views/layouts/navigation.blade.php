@@ -19,6 +19,14 @@
                     <x-nav-link :href="route('noticias.index')" :active="request()->routeIs('noticias.index')">
                         {{ __('Noticias') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('roles.index')" :active="request()->routeIs('papeis.index')">
+                        {{ __('Papeis') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('usuarios.index')">
+                        {{ __('Usuarios') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -40,6 +48,9 @@
                     <x-slot name="content">
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
+                            <a class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out" href="{{ route('edit.password') }}">
+                                {{ __('Alterar senha') }}
+                            </a>
                             @csrf
 
                             <x-dropdown-link :href="route('logout')"
@@ -47,6 +58,7 @@
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
+                            
                         </form>
                     </x-slot>
                 </x-dropdown>
